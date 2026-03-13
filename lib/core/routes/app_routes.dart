@@ -1,0 +1,326 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:future_app/core/di/di.dart';
+import 'package:future_app/features/emtyaz/emtyaz_screen.dart';
+import 'package:future_app/features/profile/logic/cubit/profile_cubit.dart';
+import 'package:future_app/features/downloads/logic/cubit/download_cubit.dart';
+import 'package:future_app/screens/experience_of_excellence/experience_of_excellence_page.dart';
+import '../../screens/splash/splash_screen.dart';
+import '../../screens/auth/auth_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../screens/auth/forgot_password_screen.dart';
+import '../../features/auth/presentation/screens/verify_code_screen.dart';
+import '../../screens/main/main_navigation_screen.dart';
+import '../../features/courses/presentation/courses_screen.dart';
+import '../../features/courses/presentation/course_detail_screen.dart';
+import '../../features/courses/presentation/lecture_player_screen.dart';
+import '../../features/college/presentation/college_screen.dart';
+import '../../features/college/presentation/course_videos_screen.dart';
+import '../../features/blog/presentation/blog_screen.dart';
+import '../../features/blog/logic/cubit/blog_cubit.dart';
+import '../../features/blog/presentation/blog_detail_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/profile/presentation/edit_password_screen.dart';
+import '../../features/profile/settings_screen.dart';
+import '../../features/courses/presentation/quiz_screen.dart';
+import '../../screens/quiz/quiz_result_screen.dart';
+import '../../features/downloads/presentation/offline_list_course_page.dart';
+import '../../features/downloads/presentation/offline_single_course_page.dart';
+import '../../features/downloads/presentation/offline_single_content_page.dart';
+import '../../features/community/presentation/community_screen.dart';
+import '../../features/community/presentation/community_chat_screen.dart';
+
+class AppRoutes {
+  // Route names
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String loginForm = '/login-form';
+  static const String register = '/register';
+  static const String registerForm = '/register-form';
+  static const String forgotPassword = '/forgot-password';
+  static const String verifyCode = '/verify-code';
+  static const String home = '/home';
+  static const String courses = '/courses';
+  static const String courseDetail = '/course-detail';
+  static const String lecturePlayer = '/lecture-player';
+  static const String downloads = '/downloads';
+  static const String college = '/college';
+  static const String courseVideos = '/course-videos';
+  static const String blog = '/blog';
+  static const String blogDetail = '/blog-detail';
+  static const String notifications = '/notifications';
+  static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
+  static const String editPassword = '/edit-password';
+  static const String settings = '/settings';
+  static const String quiz = '/quiz';
+  static const String quizResult = '/quiz-result';
+  static const String experienceOfExcellence = '/experience-of-excellence';
+  static const String offlineListCourse = '/offline-list-course';
+  static const String offlineSingleCourse = '/offline-single-course';
+  static const String offlineSingleContent = '/offline-single-content';
+  static const String emtyazScreen = '/emtyaz-screen';
+  static const String community = '/community';
+  static const String communityChat = '/community-chat';
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(
+          builder: (_) => const SplashScreen(),
+          settings: settings,
+        );
+
+      case login:
+        return MaterialPageRoute(
+          builder: (_) => const AuthScreen(),
+          settings: settings,
+        );
+
+      case loginForm:
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+          settings: settings,
+        );
+
+      case register:
+        return MaterialPageRoute(
+          builder: (_) => const RegisterScreen(),
+          settings: settings,
+        );
+
+      case registerForm:
+        return MaterialPageRoute(
+          builder: (_) => const RegisterScreen(),
+          settings: settings,
+        );
+
+      case forgotPassword:
+        return MaterialPageRoute(
+          builder: (_) => const ForgotPasswordScreen(),
+          settings: settings,
+        );
+
+      case verifyCode:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => VerifyCodeScreen(
+            email: args?['email'] ?? '',
+            type: args?['type'] ?? 'register',
+            fullName: args?['full_name'] ?? '',
+            userId: args?['user_id'] ?? '',
+          ),
+          settings: settings,
+        );
+
+      case home:
+        return MaterialPageRoute(
+          builder: (_) => const MainNavigationScreen(),
+          settings: settings,
+        );
+
+      case courses:
+        return MaterialPageRoute(
+          builder: (_) => CoursesScreen(
+            isBackButton: settings.arguments as bool,
+          ),
+          settings: settings,
+        );
+
+      case courseDetail:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => CourseDetailScreen(
+            courseId: args?['courseId'] ?? '',
+            courseTitle: args?['courseTitle'] ?? '',
+          ),
+          settings: settings,
+        );
+
+      case lecturePlayer:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => LecturePlayerScreen(
+            courseId: args?['courseId'] ?? '',
+            courseTitle: args?['courseTitle'] ?? '',
+            videoUrl: args?['videoUrl'],
+            videoType: args?['videoType'],
+          ),
+          settings: settings,
+        );
+
+      case downloads:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<DownloadCubit>(),
+            child: OfflineListCoursePage(
+              isBackButton: settings.arguments as bool,
+            ),
+          ),
+          settings: settings,
+        );
+
+      case college:
+        return MaterialPageRoute(
+          builder: (_) => CollegeScreen(
+            isBackButton: settings.arguments as bool,
+          ),
+          settings: settings,
+        );
+
+      case courseVideos:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final categoryId = args?['categoryId'] as int? ?? 0;
+        final categoryName = args?['categoryName'] as String? ?? '';
+        return MaterialPageRoute(
+          builder: (_) => CourseVideosScreen(
+            categoryId: categoryId,
+            categoryName: categoryName,
+          ),
+          settings: settings,
+        );
+
+      case blog:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<BlogCubit>()
+              ..getPosts(page: 1, limit: 10)
+              ..getCategories(),
+            child: BlogScreen(
+              isBackButton: settings.arguments as bool,
+            ),
+          ),
+          settings: settings,
+        );
+
+      case blogDetail:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => BlogDetailScreen(
+            postId: args?['postId'] ?? '',
+            postTitle: args?['postTitle'] ?? '',
+          ),
+          settings: settings,
+        );
+
+      case notifications:
+        return MaterialPageRoute(
+          builder: (_) => const NotificationsScreen(),
+          settings: settings,
+        );
+
+      case profile:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ProfileCubit>()..getProfile(),
+            child: ProfileScreen(
+              inHome: settings.arguments as bool,
+            ),
+          ),
+          settings: settings,
+        );
+      case emtyazScreen:
+        return MaterialPageRoute(
+          builder: (_) => const EmtyazScreen(),
+          settings: settings,
+        );
+
+      case editPassword:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ProfileCubit>(),
+            child: const EditPasswordScreen(),
+          ),
+          settings: settings,
+        );
+
+      case AppRoutes.settings:
+        return MaterialPageRoute(
+          builder: (_) => const SettingsScreen(),
+          settings: settings,
+        );
+
+      case quiz:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => QuizScreen(
+            quizId: args?['quizId'] ?? '',
+            quizTitle: args?['quizTitle'] ?? '',
+          ),
+          settings: settings,
+        );
+
+      case quizResult:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => QuizResultScreen(
+            result: args?['result'],
+          ),
+          settings: settings,
+        );
+      case experienceOfExcellence:
+        return MaterialPageRoute(
+          builder: (_) => const ExperienceOfExcellencePage(),
+          settings: settings,
+        );
+
+      case offlineListCourse:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<DownloadCubit>(),
+            child: OfflineListCoursePage(
+              isBackButton: settings.arguments as bool,
+            ),
+          ),
+          settings: settings,
+        );
+
+      case offlineSingleCourse:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => OfflineSingleCoursePage(
+            course: args ?? {},
+          ),
+          settings: settings,
+        );
+
+      case offlineSingleContent:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => OfflineSingleContentPage(
+            courseId: args?['courseId'] ?? 0,
+            content: args?['content'] ?? {},
+          ),
+          settings: settings,
+        );
+
+      case community:
+        return MaterialPageRoute(
+          builder: (_) => const CommunityScreen(),
+          settings: settings,
+        );
+
+      case communityChat:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => CommunityChatScreen(
+            gradeId: args?['gradeId'] ?? '',
+            gradeName: args?['gradeName'] ?? '',
+          ),
+          settings: settings,
+        );
+
+      default:
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(
+              child: Text('الصفحة غير موجودة'),
+            ),
+          ),
+          settings: settings,
+        );
+    }
+  }
+}
